@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const CARTS_FILE = './carts.json';
+const CARTS_FILE = './src/data/carts.json';
 
 export class CartManager {
   constructor() {

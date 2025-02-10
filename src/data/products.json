@@ -22,13 +22,13 @@
 		"thumbnails": []
 	},
 	{
-		"id": "67cbd923-2209-494f-a81a-ef0b3c82657e",
-		"title": "titulo 3",
-		"description": "description 3",
-		"code": 1234,
-		"price": 200,
+		"id": "9855e140-7b70-4c08-bcc7-a5060cc80618",
+		"title": "titulo10",
+		"description": "Este producto fue actualizado",
+		"code": "7894",
+		"price": 210,
 		"status": true,
-		"stock": 12,
+		"stock": 110,
 		"category": "categoria",
 		"thumbnails": []
 	}

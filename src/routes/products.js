@@ -12,10 +12,35 @@ const pathToProducts = path.join(config.dirname, '/src/data/products.json')
 console.log(pathToProducts)
 // console.log(config.dirname)
 ProductsRouter.get('/', async (req, res) => {
-  let productsString = await fs.promises.readFile(pathToProducts, 'utf-8')
-  const products = JSON.parse(productsString)
-  res.send({ products })
-})
+  try {
+    let productsString = await fs.promises.readFile(pathToProducts, 'utf-8');
+    const products = JSON.parse(productsString);
+    res.send({ products });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Error al obtener los productos' });
+  }
+});
+
+ProductsRouter.get('/:pid', async (req, res) => {
+  const { pid } = req.params;
+
+  try {
+    let productsString = await fs.promises.readFile(pathToProducts, 'utf-8');
+    const products = JSON.parse(productsString);
+
+    const product = products.find((product) => product.id === pid);
+
+    if (!product) {
+      return res.status(404).send({ message: 'Producto no encontrado' });
+    }
+
+    res.send({ product });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Error al obtener el producto' });
+  }
+});
 
 ProductsRouter.post('/', validateInputProductsPost, async (req, res) => {
   //Logica para generar el producto

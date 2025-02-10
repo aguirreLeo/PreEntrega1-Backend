@@ -34,11 +34,27 @@ CartsRouter.get('/:cid', async (req, res) => {
 // POST /:cid/product/:pid - Agregar producto a un carrito
 CartsRouter.post('/:cid/product/:pid', async (req, res) => {
   const { cid, pid } = req.params;
-
+  if (isNaN(pid) || isNaN(cid)) {
+    return res.status(400).send({ message: 'ID de carrito o producto no válido' });
+  }
   try {
     const cart = await cartManager.addProductToCart(parseInt(cid), parseInt(pid));
     res.send({ message: 'Producto agregado al carrito con éxito', cart });
   } catch (error) {
     res.status(500).send({ message: 'Error al agregar producto al carrito', error: error.message });
+  }
+});
+
+CartsRouter.delete('/:cid/product/:pid', async (req, res) => {
+  const { cid, pid } = req.params;
+
+  try {
+    const cart = await cartManager.removeProductFromCart(parseInt(cid), parseInt(pid));
+    if (!cart) {
+      return res.status(404).send({ message: 'Carrito o producto no encontrado' });
+    }
+    res.send({ message: 'Producto eliminado del carrito con éxito', cart });
+  } catch (error) {
+    res.status(500).send({ message: 'Error al eliminar el producto del carrito', error: error.message });
   }
 });

@@ -39,6 +39,15 @@ export class CartManager {
   }
 
   async addProductToCart(cartId, productId) {
+// Verificar si el producto existe 
+const products = await this.getProducts(); //  cargar productos
+const productExists = products.some((product) => product.id === productId);
+
+if (!productExists) {
+  throw new Error('El producto no existe');
+}
+
+
     const carts = await this.getCarts();
 
     const cart = carts.find((cart) => cart.id === cartId);
@@ -46,7 +55,9 @@ export class CartManager {
       throw new Error('Carrito no encontrado');
     }
 
-    const productInCart = cart.products.find((prod) => prod.product === productId);
+  
+    const productInCart = cart.products.find((prod) => prod.product === String(productId));
+
 
     if (productInCart) {
       // Incrementar cantidad si el producto ya está en el carrito
@@ -54,11 +65,31 @@ export class CartManager {
     } else {
       // Agregar un nuevo producto al carrito
       cart.products.push({
-        product: productId,
+        product: String(productId),
         quantity: 1,
       });
+      
     }
 
+    await this.saveCarts(carts);
+
+    return cart;
+  }
+  async removeProductFromCart(cartId, productId) {
+    const carts = await this.getCarts();
+    const cartIndex = carts.findIndex((cart) => cart.id === cartId);
+    if (cartIndex === -1) {
+      throw new Error('Carrito no encontrado');
+    }
+
+    const cart = carts[cartIndex];
+    const productIndex = cart.products.findIndex((prod) => prod.product === productId);
+    if (productIndex === -1) {
+      throw new Error('Producto no encontrado en el carrito');
+    }
+
+    // Eliminar el producto del carrito
+    cart.products.splice(productIndex, 1);
     await this.saveCarts(carts);
 
     return cart;
